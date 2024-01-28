@@ -1,0 +1,26 @@
+{
+    "name": "namaa/namaa-logger",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Feras-alhallak",
+            "email": "eng.ferasalhallak@gmail.com"
+        }
+    ],
+    "require": {
+        "aws/aws-sdk-php": "^3.218"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Namaa\\NamaaLogger\\NamaaLoggerServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Namaa\\Cms\\": "src/"
+        }
+    }
+}
