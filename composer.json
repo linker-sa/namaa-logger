@@ -7,9 +7,7 @@
             "email": "eng.ferasalhallak@gmail.com"
         }
     ],
-    "require": {
-        "aws/aws-sdk-php": "^3.218"
-    },
+    "require": {},
     "minimum-stability": "dev",
     "extra": {
         "laravel": {
@@ -20,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Namaa\\Cms\\": "src/"
+            "Namaa\\NamaaLogger\\": "src/"
         }
     }
 }
