@@ -20,7 +20,6 @@ return [
 
     'elastic_password' => env('N_LOGGER_ELASTIC_PASSWORD', ''),
 
-
     'storage' => [
         'database' => [
             'connection' => env('DB_CONNECTION', 'mysql'),
