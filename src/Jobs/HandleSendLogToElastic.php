@@ -116,6 +116,8 @@ class HandleSendLogToElastic implements ShouldQueue
             $params = ['index' => $indexName];
             // check if the index is already created, if we get 404, its not.
             $this->getClient()->indices()->getSettings($params);
+
+            Cache::set('elastic_index_name', $indexName);
         } catch (ClientResponseException $e) {
             if ($e->getCode() === 404) {
                 $params = [
