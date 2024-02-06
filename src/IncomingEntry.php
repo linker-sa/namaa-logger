@@ -142,7 +142,8 @@ class IncomingEntry
         $this->user = $user;
 
         $this->content = array_merge($this->content, [
-            'user_id' => $user->getAuthIdentifier()
+            'user_id' => $user->getAuthIdentifier(),
+            'user_email' => $user->email ?? null,
         ]);
 
         $this->tags(['Auth:' . $user->getAuthIdentifier()]);
