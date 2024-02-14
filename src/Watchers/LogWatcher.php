@@ -52,6 +52,8 @@ class LogWatcher extends Watcher
 
         NamaaLogger::recordLog(
             IncomingEntry::make([
+                'uri' => request()->getRequestUri() ?? null,
+                'method' => request()->getMethod() ?? null,
                 'level' => $event->level,
                 'message' => (string) $event->message,
                 'context' => Arr::except($event->context, ['telescope']),
