@@ -84,7 +84,7 @@ class HandleSendLogToElastic implements ShouldQueue
 
             $this->getClient()->index([
                 'index' => $indexName,
-                'id' => $this->data['uuid'],
+                // 'id' => $this->data['uuid'],
                 'body' => [
                     ...$this->data,
                     ...$content,
