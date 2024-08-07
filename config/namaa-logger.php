@@ -68,7 +68,7 @@ return [
     */
 
     'watchers' => [
-        Watchers\JobWatcher::class => env('N_LOGGER_JOB_WATCHER', true),
+            // Watchers\JobWatcher::class => env('N_LOGGER_JOB_WATCHER', true),
 
         Watchers\LogWatcher::class => [
             'enabled' => env('N_LOGGER_LOG_WATCHER', true),
