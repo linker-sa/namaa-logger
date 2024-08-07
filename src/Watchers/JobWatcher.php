@@ -16,6 +16,7 @@ use Laravel\Telescope\ExtractProperties;
 use Laravel\Telescope\ExtractTags;
 use Namaa\NamaaLogger\IncomingEntry;
 use Laravel\Telescope\Telescope;
+use Namaa\NamaaLogger\NamaaLogger;
 use RuntimeException;
 
 class JobWatcher extends Watcher
@@ -42,8 +43,8 @@ class JobWatcher extends Watcher
             return ['telescope_uuid' => optional($this->recordJob($connection, $queue, $payload))->uuid];
         });
 
-        $app['events']->listen(JobProcessed::class, [$this, 'recordProcessedJob']);
-        $app['events']->listen(JobFailed::class, [$this, 'recordFailedJob']);
+        // $app['events']->listen(JobProcessed::class, [$this, 'recordProcessedJob']);//Handle Update
+        // $app['events']->listen(JobFailed::class, [$this, 'recordFailedJob']);
     }
 
     /**
@@ -56,10 +57,6 @@ class JobWatcher extends Watcher
      */
     public function recordJob($connection, $queue, array $payload)
     {
-        if (!Telescope::isRecording()) {
-            return;
-        }
-
         $job = isset($payload['data']['command'])
             ? get_class($payload['data']['command'])
             : $payload['job'];
@@ -72,10 +69,8 @@ class JobWatcher extends Watcher
             'status' => 'pending',
         ], $this->defaultJobData($connection, $queue, $payload, $this->data($payload)));
 
-        Telescope::recordJob(
-            $entry = IncomingEntry::make($content)
-                ->withFamilyHash($content['data']['batchId'] ?? null)
-                ->tags($this->tags($payload))
+        NamaaLogger::recordJob(
+            $entry = IncomingEntry::make($content)->tags($this->tags($payload))
         );
 
         return $entry;
@@ -89,21 +84,19 @@ class JobWatcher extends Watcher
      */
     public function recordProcessedJob(JobProcessed $event)
     {
-        if (!Telescope::isRecording()) {
-            return;
-        }
-
         $uuid = $event->job->payload()['telescope_uuid'] ?? null;
 
         if (!$uuid) {
             return;
         }
 
-        Telescope::recordUpdate(EntryUpdate::make(
-            $uuid,
-            EntryType::JOB,
-            ['status' => 'processed']
-        ));
+        Telescope::recordUpdate(
+            EntryUpdate::make(
+                $uuid,
+                EntryType::JOB,
+                ['status' => 'processed']
+            )
+        );
 
         $this->updateBatch($event->job->payload());
     }
@@ -116,9 +109,6 @@ class JobWatcher extends Watcher
      */
     public function recordFailedJob(JobFailed $event)
     {
-        if (!Telescope::isRecording()) {
-            return;
-        }
 
         $uuid = $event->job->payload()['telescope_uuid'] ?? null;
 
@@ -133,7 +123,7 @@ class JobWatcher extends Watcher
                 'status' => 'failed',
                 'exception' => [
                     'message' => $event->exception->getMessage(),
-                    'trace' => collect($event->exception->getTrace())->map(fn ($trace) => Arr::except($trace, ['args']))->all(),
+                    'trace' => collect($event->exception->getTrace())->map(fn($trace) => Arr::except($trace, ['args']))->all(),
                     'line' => $event->exception->getLine(),
                     'line_preview' => ExceptionContext::get($event->exception),
                 ],
@@ -231,11 +221,13 @@ class JobWatcher extends Watcher
                 return;
             }
 
-            Telescope::recordUpdate(EntryUpdate::make(
-                $properties['batchId'],
-                EntryType::BATCH,
-                $batch->toArray()
-            ));
+            Telescope::recordUpdate(
+                EntryUpdate::make(
+                    $properties['batchId'],
+                    EntryType::BATCH,
+                    $batch->toArray()
+                )
+            );
         }
     }
 

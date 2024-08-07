@@ -68,19 +68,19 @@ return [
     */
 
     'watchers' => [
-        // Watchers\JobWatcher::class => env('N_LOGGER_JOB_WATCHER', true),
+        Watchers\JobWatcher::class => env('N_LOGGER_JOB_WATCHER', true),
 
         Watchers\LogWatcher::class => [
             'enabled' => env('N_LOGGER_LOG_WATCHER', true),
             'level' => 'warning',
         ],
 
-        // Watchers\QueryWatcher::class => [
-        //     'enabled' => env('N_LOGGER_QUERY_WATCHER', true),
-        //     'ignore_packages' => true,
-        //     'ignore_paths' => [],
-        //     'slow' => 100,
-        // ],
+            // Watchers\QueryWatcher::class => [
+            //     'enabled' => env('N_LOGGER_QUERY_WATCHER', true),
+            //     'ignore_packages' => true,
+            //     'ignore_paths' => [],
+            //     'slow' => 100,
+            // ],
 
         Watchers\RequestWatcher::class => [
             'enabled' => env('N_LOGGER_REQUEST_WATCHER', true),
